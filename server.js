@@ -2,6 +2,7 @@
 
 // modules =================================================
 var express        = require('express');
+var gzippo         = require('gzippo');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
@@ -31,6 +32,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
 app.use(methodOverride('X-HTTP-Method-Override')); 
 
+app.use(express.logger('dev'));
+
 // set the static files location /public/img will be /img for users
 app.use(express.static(__dirname + '/public')); 
 
@@ -46,3 +49,5 @@ console.log('Magic happens on port ' + port);
 
 // expose app           
 exports = module.exports = app;                         
+
+console.log('app has been exposed');
