@@ -13,5 +13,10 @@ angular.module('pemdasApp', [
   'UtilService'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.
+  when('/', {
+    templateUrl: 'view3/pemdas.html',
+    controller: 'PemdasController'
+  }).
+  otherwise({redirectTo: '/'});
 }]);
