@@ -60,7 +60,6 @@
   <div class="step" 
        ng-repeat="step in expression.steps"
        ng-click="expression.highlightStep(step)"
-       ng-mouseenter="expression.highlightStep(step)"
        >
     {{expression.regMatch(step.regex)}}
   </div>

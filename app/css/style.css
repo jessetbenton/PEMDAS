@@ -2,17 +2,22 @@ input.ng-invalid {
 	color:white;
 	background: red;
 }
+p {
+	font-size: 9.5vw;
+}
 
 #solveBtn {
   margin-top: 20px;
 }
 
 #solutionBreakdown .infix {
-  font-size: 80px;
+  font-size: 50px;
+  font-size: 5.0vw;
 }
 
 .step {
   font-size: 40px;
+  font-size: 4.5vw;
 }
 
 .lhs {
