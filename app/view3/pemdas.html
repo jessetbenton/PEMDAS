@@ -1,0 +1,66 @@
+<!-- public/views/pemdas.html -->
+
+<div class="jumbotron text-center">
+    <h1>P.E.M.D.A.S</h1>
+    <p>{{ tagline }}</p>
+
+    <form name="mathForm">
+      <input type="text"
+             ng-pattern="/^[0-9\+-\/\*\(\)\^]*$/"
+             ng-model="expression.infix"
+             class="text-center"
+             placeholder="6/2*(1+2)">
+      <br/>
+      <button id="solveBtn"
+              class="btn btn-primary"
+              ng-click="expression.solve()"
+              ng-disabled="mathForm.$invalid || expression.infix.length <= 0">Solve</button>
+    </form>
+</div>
+
+<div id="solutionBreakdown"
+     class="jumbotron text-center"
+     ng-if="expression.postfix.length > 0">
+  <div id="infixExpression" 
+       class="text-center infix"
+       ng-if="!expression.display && expression.postfix.length > 0">
+    {{expression.infix}}
+  </div>
+  <!-- work this into a directive -->
+  <div id="infixExpression" 
+       class="text-center infix"
+       ng-if="expression.display">
+    <span part="0" equation-format>
+      {{expression.display.part[0].value}}
+      <span ng-if="expression.display.part[0].parens">(</span>
+      <span class="lhs">{{expression.display.part[0].lhs}}</span>
+      <span class="op">{{expression.display.part[0].op}}</span>
+      <span class="rhs">{{expression.display.part[0].rhs}}</span>
+      <span ng-if="expression.display.part[0].parens">)</span>
+    </span>
+    <span part="1" equation-format>
+      {{expression.display.part[1].value}}
+      <span ng-if="expression.display.part[1].parens">(</span>
+      <span class="lhs">{{expression.display.part[1].lhs}}</span>
+      <span class="op">{{expression.display.part[1].op}}</span>
+      <span class="rhs">{{expression.display.part[1].rhs}}</span>
+      <span ng-if="expression.display.part[1].parens">)</span>
+    </span>
+    <span part="2" equation-format>
+      {{expression.display.part[2].value}}
+      <span ng-if="expression.display.part[2].parens">(</span>
+      <span class="lhs">{{expression.display.part[2].lhs}}</span>
+      <span class="op">{{expression.display.part[2].op}}</span>
+      <span class="rhs">{{expression.display.part[2].rhs}}</span>
+      <span ng-if="expression.display.part[2].parens">)</span>
+    </span>
+  </div>
+  
+
+  <div class="step" 
+       ng-repeat="step in expression.steps"
+       ng-mouseenter="expression.highlightStep(step)"
+       >
+    {{expression.regMatch(step.regex)}}
+  </div>
+</div>

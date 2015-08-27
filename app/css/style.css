@@ -1,0 +1,28 @@
+input.ng-invalid {
+	color:white;
+	background: red;
+}
+
+#solveBtn {
+  margin-top: 20px;
+}
+
+#solutionBreakdown .infix {
+  font-size: 80px;
+}
+
+.step {
+  font-size: 40px;
+}
+
+.lhs {
+  color: red;
+}
+
+.rhs {
+  color: blue;
+}
+
+.op {
+  color: green;
+}
