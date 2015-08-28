@@ -19,7 +19,7 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
         prevToken = i > 0 ? infixExpr[i-1] : undefined;
         nextToken = i < infixExpr.length ? infixExpr[i+1] : undefined;
         token = infixExpr[i];
-        if(numberRegex.exec(token)[0] !== "")) {
+        if(numberRegex.exec(token)[0] !== "") {
           if(s.peek() === "-u") {
             s.pop();
             postfix.push("" + token * -1);
