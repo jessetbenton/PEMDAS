@@ -6,7 +6,7 @@
 
     <form name="mathForm">
       <input type="text"
-             ng-pattern="/^[0-9\+-\/\*\(\)\^]*$/"
+             ng-pattern="/([0-9]*\.?[0-9]+|\+|-|\/|\*|\^|\(|\))/"
              ng-model="expression.infix"
              class="text-center"
              placeholder="6/2*(1+2)">
