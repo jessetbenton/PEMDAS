@@ -10,16 +10,25 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
       var associativity = {"-u": "Right", "^":"Right", "*":"Left", "/":"Left", "+":"Left", "-":"Left"};
       var validTokensRegex = /([0-9]*\.?[0-9]+|\+|-|\/|\*|\^|\(|\))/;
       var numberRegex = /[0-9]*\.?[0-9]+/;
-      var tokenizedInfix = infixExpr.split(re);
+      var tokenizedInfix = infixExpr.split(validTokensRegex);
       var prevToken, token, nextToken;
       var postfix = [];
       var o1, o2;
+
+      var count = 0;
+      while( count < tokenizedInfix.length) {
+        if(tokenizedInfix[count] === "") {
+          tokenizedInfix.splice(count, 1);
+        } else {
+          count++;
+        }
+      }
 
       for (var i = 0; i < tokenizedInfix.length; i++) {
         prevToken = i > 0 ? tokenizedInfix[i-1] : undefined;
         nextToken = i < tokenizedInfix.length ? tokenizedInfix[i+1] : undefined;
         token = tokenizedInfix[i];
-        if(numberRegex.exec(token)[0] !== "") {
+        if(!!numberRegex.exec(token) && numberRegex.exec(token)[0] !== "") {
           if(s.peek() === "-u") {
             s.pop();
             postfix.push("" + token * -1);
@@ -55,8 +64,6 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
             o2 = s.peek(); // next round
           }
           s.push(o1); // push o1 onto the stack
-        } else if(token = "") {
-          //do nothing
         } else if (token == "(") { // if token is left parenthesis
           s.push(token); // then push it onto the stack
         } else if (token == ")") { // if token is right parenthesis 

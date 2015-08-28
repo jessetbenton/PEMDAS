@@ -15,7 +15,6 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
   };
 
   function resetDisplay() {
-    console.log("resetDisplay");
     this.display.lhs = '';
     this.display.op = '';
     this.display.rhs = '';
