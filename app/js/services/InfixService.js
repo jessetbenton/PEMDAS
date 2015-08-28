@@ -16,9 +16,9 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
       var o1, o2;
 
       for (var i = 0; i < tokenizedInfix.length; i++) {
-        prevToken = i > 0 ? infixExpr[i-1] : undefined;
-        nextToken = i < infixExpr.length ? infixExpr[i+1] : undefined;
-        token = infixExpr[i];
+        prevToken = i > 0 ? tokenizedInfix[i-1] : undefined;
+        nextToken = i < tokenizedInfix.length ? tokenizedInfix[i+1] : undefined;
+        token = tokenizedInfix[i];
         if(numberRegex.exec(token)[0] !== "") {
           if(s.peek() === "-u") {
             s.pop();
