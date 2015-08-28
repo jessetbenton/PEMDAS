@@ -8,15 +8,18 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
       var ops = "-+/*^";
       var precedence = {"-u": 5, "^":4, "*":3, "/":3, "+":2, "-":2};
       var associativity = {"-u": "Right", "^":"Right", "*":"Left", "/":"Left", "+":"Left", "-":"Left"};
+      var validTokensRegex = /([0-9]*\.?[0-9]+|\+|-|\/|\*|\^|\(|\))/;
+      var numberRegex = /[0-9]*\.?[0-9]+/;
+      var tokenizedInfix = infixExpr.split(re);
       var prevToken, token, nextToken;
       var postfix = [];
       var o1, o2;
 
-      for (var i = 0; i < infixExpr.length; i++) {
+      for (var i = 0; i < tokenizedInfix.length; i++) {
         prevToken = i > 0 ? infixExpr[i-1] : undefined;
         nextToken = i < infixExpr.length ? infixExpr[i+1] : undefined;
         token = infixExpr[i];
-        if (token >= "0" && token <= "9") { // if token is operand (here limited to 0 <= x <= 9)
+        if(numberRegex.exec(token)[0] !== "")) {
           if(s.peek() === "-u") {
             s.pop();
             postfix.push("" + token * -1);
@@ -25,8 +28,7 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
           } else {
             postfix.push(token);
           }
-        }
-        else if (ops.indexOf(token) != -1) { // if token is an operator
+        } else if (ops.indexOf(token) != -1) { // if token is an operator
           o1 = token;
           o2 = s.peek();
 
@@ -53,13 +55,14 @@ angular.module('InfixService', []).factory('infix', ['Stack', function(Stack) {
             o2 = s.peek(); // next round
           }
           s.push(o1); // push o1 onto the stack
+        } else if(token = "") {
+          //do nothing
         } else if (token == "(") { // if token is left parenthesis
           s.push(token); // then push it onto the stack
         } else if (token == ")") { // if token is right parenthesis 
           if(nextToken > "0" && nextToken < "9" || nextToken === "(") {
             throw "Implicit multiplication";
           }
-
           while (s.peek() != "("){ // until token at top is (
             postfix.push(s.pop());
           }
