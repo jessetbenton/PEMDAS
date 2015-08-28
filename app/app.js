@@ -3,9 +3,6 @@
 // Declare app level module which depends on views, and components
 angular.module('pemdasApp', [
   'ngRoute',
-  'pemdasApp.view1',
-  'pemdasApp.view2',
-  'pemdasApp.version',
   'PemdasCtrl',
   'StackService',
   'InfixService',
@@ -15,7 +12,7 @@ angular.module('pemdasApp', [
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   when('/', {
-    templateUrl: 'view3/pemdas.html',
+    templateUrl: 'views/pemdas.html',
     controller: 'PemdasController'
   }).
   otherwise({redirectTo: '/'});
