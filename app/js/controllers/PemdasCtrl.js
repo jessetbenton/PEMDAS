@@ -3,8 +3,6 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
 
   $scope.tagline = 'Please Excuse My Dear Aunt Sally';
 
-  console.dir($routeParams);
-
   $scope.expression = {
     infix: $routeParams.eq ? $routeParams.eq : '',
     display: undefined,
@@ -15,6 +13,11 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
     highlightStep: highlightStep,
     resetDisplay: resetDisplay
   };
+
+  //solve requests with query strings
+  if($scope.expression.infix !== '') {
+    $scope.expression.solve();
+  }
 
   function resetDisplay() {
     this.display = {};
