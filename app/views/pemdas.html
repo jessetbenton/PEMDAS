@@ -21,48 +21,31 @@
 <div id="solutionBreakdown"
      class="jumbotron text-center"
      ng-if="expression.postfix.length > 0">
-  <div id="infixExpression" 
-       class="text-center infix"
-       ng-if="!expression.display && expression.postfix.length > 0">
-    {{expression.infix}}
-  </div>
   <!-- work this into a directive -->
   <div id="infixExpression" 
-       class="text-center infix"
-       ng-if="expression.display">
-    <span part="0" equation-format>
-      {{expression.display.part[0].value}}
-      <span ng-if="expression.display.part[0].parens">(</span>
-      <span class="lhs">{{expression.display.part[0].lhs}}</span>
-      <span class="op">{{expression.display.part[0].op}}</span>
-      <span class="rhs">{{expression.display.part[0].rhs}}</span>
-      <span ng-if="expression.display.part[0].parens">)</span>
+       class="text-center infix">
+    <span ng-if="!expression.display && expression.postfix.length > 0">
+      {{expression.infix}}
     </span>
-    <span part="1" equation-format>
-      {{expression.display.part[1].value}}
-      <span ng-if="expression.display.part[1].parens">(</span>
-      <span class="lhs">{{expression.display.part[1].lhs}}</span>
-      <span class="op">{{expression.display.part[1].op}}</span>
-      <span class="rhs">{{expression.display.part[1].rhs}}</span>
-      <span ng-if="expression.display.part[1].parens">)</span>
-    </span>
-    <span part="2" equation-format>
-      {{expression.display.part[2].value}}
-      <span ng-if="expression.display.part[2].parens">(</span>
-      <span class="lhs">{{expression.display.part[2].lhs}}</span>
-      <span class="op">{{expression.display.part[2].op}}</span>
-      <span class="rhs">{{expression.display.part[2].rhs}}</span>
-      <span ng-if="expression.display.part[2].parens">)</span>
+    <span ng-if="expression.display"
+          ng-repeat="part in expression.display.part">
+      {{part.value}}
+      <span ng-if="part.parens">(</span>
+      <span class="lhs">{{part.lhs}}</span>
+      <span class="op">{{part.op}}</span>
+      <span class="rhs">{{part.rhs}}</span>
+      <span ng-if="part.parens">)</span>
     </span>
   </div>
-  
-  <div ng-repeat="step in expression.steps">
-    <div style="display:none">
-      <img class="arrow" class="vcenter" src="../images/arrow-right.png">
-    </div>
-    <div class="step vcenter" 
-         ng-click="expression.highlightStep(step)">
+  <hr>
+  <div ng-repeat="step in expression.steps" 
+       style="position:relative"
+       ng-click="expression.highlightStep(step)">
+    <img class="arrow" 
+         src="../images/arrow-right.png">
+    <div class="step">
       {{expression.regMatch(step.regex)}}
     </div>
   </div>
 </div>
+

@@ -34,10 +34,9 @@ p {
 
 .arrow {
   height: 4vw;
-}
-
-.vcenter {
-  display: inline-block;
-  vertical-align: middle;
-  float: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }

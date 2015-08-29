@@ -1,6 +1,6 @@
 // public/js/controllers/PemdasCtrl.js
-angular.module('PemdasCtrl', []).controller('PemdasController', function($scope, infix, postfix, $routeParams) {
-
+angular.module('PemdasCtrl', [])
+.controller('PemdasController', function($scope, infix, postfix, $routeParams) {
   $scope.tagline = 'Please Excuse My Dear Aunt Sally';
 
   $scope.expression = {
@@ -73,4 +73,33 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
       return "Error: " + e;
     }
   }
-});
+})
+.directive('infixExpressionBreakdown', [function() {
+
+  function link(scope, element, attrs) {
+    var format,
+        timeoutId;
+
+    function updateTime() {
+      element.text(dateFilter(new Date(), format));
+    }
+
+    scope.$watch(attrs.myCurrentTime, function(value) {
+      format = value;
+      updateTime();
+    });
+
+    element.on('$destroy', function() {
+      $interval.cancel(timeoutId);
+    });
+
+    // start the UI update process; save the timeoutId for canceling
+    timeoutId = $interval(function() {
+      updateTime(); // update DOM
+    }, 1000);
+  }
+
+  return {
+    link: link
+  };
+}]);
