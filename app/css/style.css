@@ -31,3 +31,13 @@ p {
 .op {
   color: green;
 }
+
+.arrow {
+  height: 4vw;
+}
+
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}

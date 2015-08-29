@@ -56,11 +56,13 @@
     </span>
   </div>
   
-
-  <div class="step" 
-       ng-repeat="step in expression.steps"
-       ng-click="expression.highlightStep(step)"
-       >
-    {{expression.regMatch(step.regex)}}
+  <div ng-repeat="step in expression.steps">
+    <div style="display:none">
+      <img class="arrow" class="vcenter" src="../images/arrow-right.png">
+    </div>
+    <div class="step vcenter" 
+         ng-click="expression.highlightStep(step)">
+      {{expression.regMatch(step.regex)}}
+    </div>
   </div>
 </div>
