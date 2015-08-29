@@ -9,11 +9,13 @@ angular.module('pemdasApp', [
   'PostfixService',
   'UtilService'
 ]).
-config(['$routeProvider', function($routeProvider) {
+config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
   when('/', {
     templateUrl: 'views/pemdas.html',
     controller: 'PemdasController'
   }).
   otherwise({redirectTo: '/'});
+
+  $locationProvider.html5Mode(true);
 }]);
