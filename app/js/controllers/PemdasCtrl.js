@@ -1,10 +1,12 @@
 // public/js/controllers/PemdasCtrl.js
-angular.module('PemdasCtrl', []).controller('PemdasController', function($scope, infix, postfix) {
+angular.module('PemdasCtrl', []).controller('PemdasController', function($scope, infix, postfix, $routeParams) {
 
   $scope.tagline = 'Please Excuse My Dear Aunt Sally';
 
+  console.dir($routeParams);
+
   $scope.expression = {
-    infix: '6/2*(1+2)',
+    infix: $routeParams.eq ? $routeParams.eq : '',
     display: undefined,
     postfix: [],
     steps: [],
@@ -15,9 +17,11 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
   };
 
   function resetDisplay() {
-    this.display.lhs = '';
-    this.display.op = '';
-    this.display.rhs = '';
+    this.display = {};
+    this.display.part = [];
+    this.display.part[0] = {};
+    this.display.part[1] = {};
+    this.display.part[2] = {};
   }
 
   function matchRegex(pattern) {
@@ -31,11 +35,8 @@ angular.module('PemdasCtrl', []).controller('PemdasController', function($scope,
     var rhs = expr.match(step.rhs_regex)[0];
     var segments = this.infix.split(expr);
     var location = 0;
-    this.display = {};
-    this.display.part = [];
-    this.display.part[0] = {};
-    this.display.part[1] = {};
-    this.display.part[2] = {};
+    this.resetDisplay();
+
     if(segments[0] !== "" && segments[1] !== "") {
       //current step is in the middle
       this.display.part[0] = { value: segments[0] };
