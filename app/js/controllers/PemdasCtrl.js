@@ -11,7 +11,8 @@ angular.module('PemdasCtrl', [])
     solve: convertAndSolve,
     regMatch: matchRegex,
     highlightStep: highlightStep,
-    resetDisplay: resetDisplay
+    resetDisplay: resetDisplay,
+    showArrow: showArrow
   };
 
   //solve requests with query strings
@@ -25,6 +26,11 @@ angular.module('PemdasCtrl', [])
     this.display.part[0] = {};
     this.display.part[1] = {};
     this.display.part[2] = {};
+    this.display.step = undefined;
+  }
+
+  function showArrow(step) {
+    return this.display && this.display.step === step ? true : false; 
   }
 
   function matchRegex(pattern) {
@@ -55,6 +61,7 @@ angular.module('PemdasCtrl', [])
       this.display.part[0] = { value: segments[0] };
       location = 1;
     }
+    this.display.step = step;
     this.display.part[location] = {
       lhs: lhs,
       op: step.op,
@@ -69,37 +76,9 @@ angular.module('PemdasCtrl', [])
       $scope.expression.postfix = pf;
       $scope.expression.steps = postfix.solve(pf, $scope.expression.infix);
       $scope.expression.display = undefined;
+      $scope.expression.highlightStep($scope.expression.steps[0]);
     } catch(e) {
       return "Error: " + e;
     }
   }
-})
-.directive('infixExpressionBreakdown', [function() {
-
-  function link(scope, element, attrs) {
-    var format,
-        timeoutId;
-
-    function updateTime() {
-      element.text(dateFilter(new Date(), format));
-    }
-
-    scope.$watch(attrs.myCurrentTime, function(value) {
-      format = value;
-      updateTime();
-    });
-
-    element.on('$destroy', function() {
-      $interval.cancel(timeoutId);
-    });
-
-    // start the UI update process; save the timeoutId for canceling
-    timeoutId = $interval(function() {
-      updateTime(); // update DOM
-    }, 1000);
-  }
-
-  return {
-    link: link
-  };
-}]);
+});

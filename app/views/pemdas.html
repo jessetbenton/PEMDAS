@@ -40,9 +40,10 @@
   <hr>
   <div ng-repeat="step in expression.steps" 
        style="position:relative"
-       ng-click="expression.highlightStep(step)">
+       ng-click="expression.highlightStep(step);">
     <img class="arrow" 
-         src="../images/arrow-right.png">
+         src="../images/arrow-right.png"
+         ng-show="expression.showArrow(step)">
     <div class="step">
       {{expression.regMatch(step.regex)}}
     </div>
