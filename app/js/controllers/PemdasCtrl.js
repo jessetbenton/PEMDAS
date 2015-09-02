@@ -35,37 +35,34 @@ angular.module('PemdasCtrl', [])
     // console.dir(test);
   // }
   
-  function parseNode(node, parent) {
+  function parseNode(node, intermediateStep) {
     var expr = '';
     var solution = '';
-
     switch (node.type) {
       case 'ConstantNode':
         return node.value;
       case 'ParenthesisNode':
         steps.push('(' + node.content + ')');
-        expr = '(' + parseNode(node.content, node) + ')';
+        expr = '(' + parseNode(node.content, true) + ')';
         break;
       case 'OperatorNode':
         var lhs,
         rhs = '';
         if(node.args.length > 1) {
-          rhs = parseNode(node.args[1], node);
+          rhs = parseNode(node.args[1]);
         }
-        lhs = parseNode(node.args[0], node);
+        lhs = parseNode(node.args[0]);
         expr = lhs + node.op + rhs;
         steps.push(expr);
         break;
       case 'FunctionNode':
-        expr = node.name + '(' + parseNode(node.args[0], node) + ')';
+        expr = node.name + '(' + parseNode(node.args[0]) + ')';
         steps.push(node.name + '(' + node.args[0] + ')');
         break;
     }
     solution = math.eval(expr);
-    node.expr = expr;
-    answers.push(solution);
-    if(parent && parent.expr) {
-      console.log("parent", parent.expr);
+    if(intermediateStep) {
+      answers.push(solution);
     }
     return solution;
   }
