@@ -4,21 +4,37 @@ angular.module('PostfixService', []).factory('postfix', ['Stack', 'util', functi
   return {
     // convert infix expression to postfix expression
     solve : function(postfixExpr, infixExpr) {
-      var resultStack = new Stack();
-      var currentState = infixExpr;
+      var stack = new Stack();
       var steps = [];
-      var uninterpretedStack = new Stack();
       for(var i = 0; i < postfixExpr.length; i++) {
         if(util.isNumeric(postfixExpr[i])) {
-            resultStack.push(postfixExpr[i]);
+            stack.push(postfixExpr[i]);
         } else {
-          var rhs = resultStack.pop();
-          var lhs = resultStack.pop();
+          var rhs = stack.pop();
+          var lhs = stack.pop();
           var op = postfixExpr[i];
+          var result;
+        switch(step.op) {
+          case '^':
+            result = Math.pow(new Number(lhs), new Number(rhs));
+          break;
+          case '/':
+            result = new Number(lhs) / new Number(rhs);
+          break;
+          case '*':
+            result = new Number(lhs) * new Number(rhs);
+          break;
+          case '+':
+            result = new Number(lhs) + new Number(rhs);
+          break;
+          case '-':
+            result = new Number(lhs) - new Number(rhs);
+          break;
+        }
 
           var sanitizedExpr = util.sanitizeExpression(lhs + op + rhs);
           var regex = new RegExp("(\\(" + sanitizedExpr + "\\)|" + sanitizedExpr + ")");
-          var match = currentState.match(regex, resultStack.peek());
+          var match = infixExpr.match(regex, stack.peek());
 
           _step = {
             lhs: lhs,
@@ -28,8 +44,7 @@ angular.module('PostfixService', []).factory('postfix', ['Stack', 'util', functi
           };
 
           if(match) {
-            resultStack.push(match[0]);
-            
+            stack.push(match[0]);
             _step['lhs_regex'] = new RegExp(util.sanitizeExpression(util.matchedExpression(lhs, match[0])));
             _step['rhs_regex'] = new RegExp(util.sanitizeExpression(util.matchedExpression(rhs, match[0])));
           }
