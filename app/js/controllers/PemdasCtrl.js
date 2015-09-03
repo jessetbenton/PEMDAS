@@ -15,9 +15,8 @@ angular.module('PemdasCtrl', [])
   };
 
   function treatQueryString(qs) {
-    this.infix = decodeURIComponent(qs).replace(/\s/g, "+");
-    var mathExpr = math.parse(this.infix);
-    this.infix = mathExpr.toString();
+    var mathExpr = math.parse(decodeURIComponent(qs).replace(/\s/g, "+"));
+    $scope.expression.infix = mathExpr.toString();
   }
 
   //solve requests with query strings
@@ -118,7 +117,6 @@ angular.module('PemdasCtrl', [])
   }
 
   function solve() {
-    this.display = undefined;
     this.steps = new Stack();
     var mathExpr = math.parse(this.infix);
     this.infix = mathExpr.toString();
