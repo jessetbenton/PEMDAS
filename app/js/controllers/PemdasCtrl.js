@@ -1,78 +1,77 @@
 // public/js/controllers/PemdasCtrl.js
 angular.module('PemdasCtrl', [])
-.controller('PemdasController', function($scope, infix, postfix, $routeParams) {
+.controller('PemdasController', function($scope, $routeParams, util, Stack) {
   $scope.tagline = 'Please Excuse My Dear Aunt Sally';
-  console.dir($routeParams);
-  console.dir($routeParams.eq);
-  console.dir($routeParams['eq']);
-  var steps = [];
-  var answers = [];
   $scope.expression = {
     infix: $routeParams.eq ? treatQueryString($routeParams.eq) : '',
     display: undefined,
-    postfix: [],
-    steps: [],
-    convert: convertAndSolve,
-    regMatch: matchRegex,
+    steps: new Stack(),
+    solve: solve,
     highlightStep: highlightStep,
     resetDisplay: resetDisplay,
-    showArrow: showArrow
+    showArrow: showArrow,
+    parseNode: parseNode,
+    treatQueryString: treatQueryString
   };
 
   function treatQueryString(qs) {
-    console.log("treating query string", qs)
-    $scope.expression.infix = decodeURIComponent(qs).replace(/\s/g, "+");
-    console.dir(parseNode(math.parse($scope.expression.infix)));
+    this.infix = decodeURIComponent(qs).replace(/\s/g, "+");
+    var mathExpr = math.parse(this.infix);
+    this.infix = mathExpr.toString();
   }
 
   //solve requests with query strings
-  // if($scope.expression.infix !== '') {
-    // $scope.expression.convert();
-    // console.dir($routeParams)
-    // var test0 = $routeParams.eq;
-    // console.dir($routeParams['eq']);
-    // var test = math.parse($routeParams.eq);
-    // console.dir(test);
-  // }
-  
+  if($scope.expression.infix !== '') {
+    treatQueryString($routeParams.eq);
+    $scope.expression.solve();
+  }
+
   function parseNode(node, intermediateStep) {
     var expr = '';
+    var rawExpr = '';
     var solution = '';
     switch (node.type) {
       case 'ConstantNode':
         return node.value;
       case 'ParenthesisNode':
-        steps.push('(' + node.content + ')');
-        expr = '(' + parseNode(node.content, true) + ')';
+        rawExpr = '(' + node.content + ')';
+        expr = '(' + this.parseNode(node.content, true) + ')';
         break;
       case 'OperatorNode':
         var lhs,
         rhs = '';
         if(node.args.length > 1) {
-          rhs = parseNode(node.args[1]);
+          rhs = this.parseNode(node.args[1]);
         }
-        lhs = parseNode(node.args[0]);
+        lhs = this.parseNode(node.args[0]);
         expr = lhs + node.op + rhs;
-        steps.push(expr);
+        rawExpr = expr;
         break;
       case 'FunctionNode':
-        expr = node.name + '(' + parseNode(node.args[0]) + ')';
-        steps.push(node.name + '(' + node.args[0] + ')');
+        expr = node.name + '(' + this.parseNode(node.args[0]) + ')';
+        rawExpr = node.name + '(' + node.args[0] + ')';
         break;
     }
     solution = math.eval(expr);
-    if(intermediateStep) {
-      answers.push(solution);
+    if(!intermediateStep) {
+      var parsed, temp, re;
+
+      if(this.steps.length() > 0) {
+        parsed = this.steps.peek().infix;
+      } else {
+        parsed = math.parse(this.infix).toString();
+      }
+      temp = math.parse(rawExpr).toString();
+
+      re = util.getRegex(temp);
+      this.steps.push({
+        infix: parsed.replace(re, solution),
+        expr: parsed,
+        solution: solution,
+        regex: re
+      });
     }
     return solution;
-  }
-
-  while(steps.length > 0) {
-    var out = steps.shift();
-    if(out[0] !== "(") {
-      out += " " + answers.shift();
-    }
-    console.log(out);
   }
 
   function resetDisplay() {
@@ -88,16 +87,12 @@ angular.module('PemdasCtrl', [])
     return this.display && this.display.step === step ? true : false; 
   }
 
-  function matchRegex(pattern) {
-    var match = this.infix.match(pattern);
-    return match ? match[0] : '';
-  }
-
+  //need to highlight steps without clicking...
   function highlightStep(step) {
-    var expr = this.regMatch(step.regex);
-    var lhs = expr.match(step.lhs_regex)[0];
-    var rhs = expr.match(step.rhs_regex)[0];
-    var segments = this.infix.split(expr);
+    var expr = step.parsed.match(step.re);
+
+    var segments = step.parsed.split(step.re);
+
     var location = 0;
     this.resetDisplay();
 
@@ -118,47 +113,58 @@ angular.module('PemdasCtrl', [])
     }
     this.display.step = step;
     this.display.part[location] = {
-      lhs: lhs,
-      op: step.op,
-      rhs: rhs,
-      parens: expr[0] === "(" ? true : false
+      highlight: expr[0]
     }
   }
 
-  function convertAndSolve() {
-    try {
-      var pf = infix.toPostfix($scope.expression.infix);
-      $scope.expression.postfix = pf;
-      $scope.expression.steps = postfix.solve(pf, $scope.expression.infix);
-      $scope.expression.display = undefined;
-      // $scope.expression.highlightStep($scope.expression.steps[0]);
-    } catch(e) {
-      return "Error: " + e;
-    }
+  function solve() {
+    this.display = undefined;
+    this.steps = new Stack();
+    var mathExpr = math.parse(this.infix);
+    this.infix = mathExpr.toString();
+    this.answer = this.parseNode(mathExpr);
   }
+})
+.directive('highlightExpression', [ function() {
+  function link(scope, element, attrs) {
+    var re = new RegExp(attrs.regex.substr(1, attrs.regex.length -2));
+    var segments = attrs.expr.split(re);
+    var display = [];
+    var location = 0;
 
-  function postfixToPemdas() {
-    for(var i = 0; i < this.steps.length; i++) {
-      var step = this.steps[i];
-      var lhs = step.lhs;
-      var rhs = step.rhs;
-      switch(step.op) {
-        case '^':
-          step.solution = Math.pow(new Number(lhs), new Number(rhs));
-        break;
-        case '/':
-          step.solution = new Number(lhs) / new Number(rhs);
-        break;
-        case '*':
-          step.solution = new Number(lhs) * new Number(rhs);
-        break;
-        case '+':
-          step.solution = new Number(lhs) + new Number(rhs);
-        break;
-        case '-':
-          step.solution = new Number(lhs) - new Number(rhs);
-        break;
+    if(segments[0] !== "" && segments[1] !== "") {
+      //current step is in the middle
+      display[0] = { value: segments[0] };
+      location = 1;
+      display[1] = { value: segments[1] };
+    } else if(segments[0] === "" && segments[1] !== "") {
+      //current step is at the beginning
+      location = 0;
+      display[1] = { value: segments[1] };
+    }
+    else if(segments[0] !== "" && segments[1] === "") {
+      //current step is at the end
+      display[0] = { value: segments[0] };
+      location = 1;
+    }
+    display[location] = {
+      highlight: attrs.expr.match(re)[0]
+    }
+
+    for(var i = 0; i < display.length; i++) {
+      var el = document.createElement('span');
+      el.classList.add("step");
+      if(display[i].value) {
+        el.innerHTML = display[i].value.replace('*', '×');
+      } else if(display[i].highlight) {
+        el.classList.add("highlight");
+        el.innerHTML = display[i].highlight.replace('*', '×');
       }
+      element[0].appendChild(el);;
     }
   }
-});
+
+  return {
+    link: link
+  };
+}]);

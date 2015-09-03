@@ -2,7 +2,11 @@
 angular.module('UtilService', []).factory('util', [function() {
   return {
     sanitizeExpression: function(expr) {
+      console.log("sanitizeExpression", expr);
       return ("" + expr).replace(/(\+|\*|\\|\^|\(|\)|\/)/g, "\\$1");
+    },
+    getRegex: function(expr) {
+      return new RegExp(("" + expr).replace(/(\+|\*|\\|\^|\(|\)|\/)/g, "\\$1"));
     },
     matchedExpression: function(subExpr, expr) {
       var sanitizedExpr = this.sanitizeExpression(subExpr);

@@ -13,40 +13,25 @@
       <br/>
       <button id="solveBtn"
               class="btn btn-primary"
-              ng-click="expression.convert()"
+              ng-click="expression.solve()"
               ng-disabled="mathForm.$invalid || expression.infix.length <= 0">Solve</button>
     </form>
 </div>
 
 <div id="solutionBreakdown"
      class="jumbotron text-center"
-     ng-if="expression.postfix.length > 0">
-  <!-- work this into a directive -->
-  <div id="infixExpression" 
-       class="text-center infix">
-    <span ng-if="!expression.display && expression.postfix.length > 0">
-      {{expression.infix}}
-    </span>
-    <span ng-if="expression.display"
-          ng-repeat="part in expression.display.part">
-      {{part.value}}
-      <span ng-if="part.parens">(</span>
-      <span class="lhs">{{part.lhs}}</span>
-      <span class="op">{{part.op}}</span>
-      <span class="rhs">{{part.rhs}}</span>
-      <span ng-if="part.parens">)</span>
-    </span>
-  </div>
+     ng-if="expression.steps.dataStore.length > 0">
+  <span class="title">Steps</span>
   <hr>
-  <div ng-repeat="step in expression.steps" 
-       style="position:relative"
-       ng-click="expression.highlightStep(step);">
-    <img class="arrow" 
-         src="../images/arrow-right.png"
-         ng-show="expression.showArrow(step)">
-    <div class="step">
-      {{expression.regMatch(step.regex)}}
-    </div>
+  <div class="text-center infix"
+       ng-repeat="r in expression.steps.dataStore"
+       expr={{r.expr}}
+       regex={{r.regex.toString()}} 
+       highlight-expression
+       >
+  </div>
+  <div class="text-center infix highlight">
+      {{expression.answer}}
   </div>
 </div>
 
