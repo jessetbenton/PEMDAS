@@ -1,6 +1,16 @@
 // public/js/controllers/PemdasCtrl.js
 angular.module('PemdasCtrl', [])
 .controller('PemdasController', function($scope, $routeParams, util, Stack) {
+  //configure mathjs for big number
+  math.config({number: 'fraction'});
+  math.typed.conversions.unshift({
+    from: 'Fraction',
+    to: 'BigNumber',
+    convert: function (value) {
+      return new math.type.BigNumber(value);
+    }
+  });
+
   $scope.tagline = 'Please Excuse My Dear Aunt Sally';
   $scope.expression = {
     infix: $routeParams.eq ? treatQueryString($routeParams.eq) : '',
