@@ -5,8 +5,6 @@ angular.module('pemdasApp', [
   'ngRoute',
   'PemdasCtrl',
   'StackService',
-  'InfixService',
-  'PostfixService',
   'UtilService'
 ]).
 config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {

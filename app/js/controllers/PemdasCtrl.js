@@ -18,8 +18,6 @@ angular.module('PemdasCtrl', [])
     steps: new Stack(),
     solve: solve,
     highlightStep: highlightStep,
-    resetDisplay: resetDisplay,
-    showArrow: showArrow,
     parseNode: parseNode,
     treatQueryString: treatQueryString
   };
@@ -83,27 +81,11 @@ angular.module('PemdasCtrl', [])
     return solution;
   }
 
-  function resetDisplay() {
-    this.display = {};
-    this.display.part = [];
-    this.display.part[0] = {};
-    this.display.part[1] = {};
-    this.display.part[2] = {};
-    this.display.step = undefined;
-  }
-
-  function showArrow(step) {
-    return this.display && this.display.step === step ? true : false; 
-  }
-
   //need to highlight steps without clicking...
   function highlightStep(step) {
     var expr = step.parsed.match(step.re);
-
     var segments = step.parsed.split(step.re);
-
     var location = 0;
-    this.resetDisplay();
 
     if(segments[0] !== "" && segments[1] !== "") {
       //current step is in the middle
