@@ -1,0 +1,37 @@
+<!-- public/views/pemdas.html -->
+
+<div class="jumbotron text-center">
+    <h1>P.E.M.D.A.S</h1>
+    <p>{{ tagline }}</p>
+
+    <form name="mathForm">
+      <input type="text"
+             ng-pattern="/([0-9]*\.?[0-9]+|\+|-|\/|\*|\^|\(|\))/"
+             ng-model="expression.infix"
+             class="text-center"
+             placeholder="6/2*(1+2)">
+      <br/>
+      <button id="solveBtn"
+              class="btn btn-primary"
+              ng-click="expression.solve()"
+              ng-disabled="mathForm.$invalid || expression.infix.length <= 0">Solve</button>
+    </form>
+</div>
+
+<div id="solutionBreakdown"
+     class="jumbotron text-center"
+     ng-if="expression.steps.dataStore.length > 0">
+  <span class="title">Steps</span>
+  <hr>
+  <div class="text-center infix"
+       ng-repeat="r in expression.steps.dataStore"
+       expr={{r.expr}}
+       regex={{r.regex.toString()}} 
+       highlight-expression
+       >
+  </div>
+  <div class="text-center infix highlight">
+      {{expression.answer.toString()}}
+  </div>
+</div>
+
